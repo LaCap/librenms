@@ -53,6 +53,15 @@ function prometheus_push($device, $measurement, $tags, $fields)
                 curl_setopt($ch, CURLOPT_POST, 1);
                 curl_setopt($ch, CURLOPT_POSTFIELDS, $vals);
                 curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+                if (Config::get('prometheus.ssl') === true) {
+                    $ca_path = Config::get('prometheus.ca_cert');
+                    $cert_path = Config::get('prometheus.cert_path');
+                    $pkey_path = Config::get('prometheus.pkey_path');
+                    curl_setopt($ch, CURLOPT_CAINFO, $ca_path);
+                    curl_setopt($ch, CURLOPT_CAPATH, $ca_path);
+                    curl_setopt($ch, CURLOPT_SSLCERT, $cert_path);
+                    curl_setopt($ch, CURLOPT_SSLKEY, $pkey_path);
+                }
  
                 $headers = array();
                 $headers[] = "Content-Type: test/plain";
